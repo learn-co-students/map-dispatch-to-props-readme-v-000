@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import './App.css';
 import { connect } from 'react-redux';
 import { addItem } from  './actions/items'
+import { bindActionCreators } from 'redux'
 
 class App extends Component {
   handleOnClick(){
-    this.props.store.dispatch(addItem())
+    this.props.addItem()
   }
   render() {
     return (
@@ -17,11 +18,18 @@ class App extends Component {
   }
 }
 
-const connectedComponent = connect(mapStateToProps)(App)
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(App);)(App)
 
 function mapStateToProps(state){
   return {items: state.items}
 }
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    addItem: addItem
+  }, dispatch)
+};
+ 
 
 
 export default connectedComponent;
