@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux'
 import { addItem } from  './actions/items';
 
 class App extends Component {
@@ -27,4 +28,10 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators ({
+    addItem: addItem
+  }, dispatch)
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
