@@ -5,7 +5,7 @@ concerns by allowing us to not reference our store in our component when
 retrieving the state. So it moved us towards having our state management in one
 part of our code, and our display of our state management in a different part.
 In other words, it started the process of removing knowledge of __Redux__ inside
-our components.  
+our components..  
 
 What prevented us from fully removing a reference to __Redux__ inside our
 components was that we did not know how to dispatch actions without calling
