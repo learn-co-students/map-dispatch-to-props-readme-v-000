@@ -5,19 +5,19 @@ import { addItem } from  './actions/items';
 
 class App extends Component {
 
-  handleOnClick() {
-    this.props.store.dispatch(addItem());
+  handleOnClick = event => {
+    this.props.addItem();
   }
 
   render() {
     return (
       <div className="App">
-        <button onClick={(event) => this.handleOnClick(event)}>
+        <button onClick={this.handleOnClick}>
           Click
-          </button>
+        </button>
         <p>{this.props.items.length}</p>
       </div>
-    );
+      );
   }
 };
 
@@ -27,4 +27,26 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(App);
+const mapDispatchtoProps = dispatch => {
+  return {
+    addItem: () => {
+      dispatch(addItem())
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchtoProps)(App);
+
+//entire mapDispatchToProps could be discarded if connect were:
+//export default connect(mapStateToProps, { addItem })(App)
+//
+//and both could be discarded with:
+//
+//export default connect(state => ({items: state.items}), { addItem })(App)
+//
+//Also, dispatch is automatically passed if you do:
+//
+//export default connect(state => ({ items: state.items }))(App);
+//
+//and we would still have this.props.dispatch() available to us in App
+
