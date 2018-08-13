@@ -6,10 +6,11 @@ import { addItem } from  './actions/items';
 class App extends Component {
 
   handleOnClick() {
-    this.props.store.dispatch(addItem());
+    this.props.addItem();
   }
 
   render() {
+    debugger;
     return (
       <div className="App">
         <button onClick={(event) => this.handleOnClick(event)}>
@@ -27,4 +28,23 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = dispatch => {
+  return {
+    addItem: () => {
+      dispatch(addItem())
+    }
+  }
+}
+
+// export default connect(mapStateToProps, mapDispatchToProps)(App);
+// Standard Approach  
+
+// export default connect(state => ({ items: state.items }), { addItem })(App);
+// Can even not use mapStateToProps
+// if second argument addItem is passed in as object as it is, redux, connect handles this for us
+// and is read as key and value
+
+export default connect(state => ({ items: state.items }))(App);
+// by default mapDispatchToProps is just dispatch => ({dispatch}), so if you don't specify the second argument
+// to connect(), you'll get dispatch injected as a prop in your component. 
+// i.e. the above export statement still permits this.props.dispatch()
