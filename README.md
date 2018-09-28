@@ -1,4 +1,4 @@
-### Introduction
+### Introduction/Lecture
 
 So as you remember, `mapStateToProps()` gives us a degree of separation of
 concerns by allowing us to not reference our store in our component when
