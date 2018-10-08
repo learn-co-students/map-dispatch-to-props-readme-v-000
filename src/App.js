@@ -43,3 +43,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(App);
 
 // both mapStateToProps and mapDispatchToProps can be omited if state and action are directly references in connect():
 // export default connect(state => ({ items: state.items }), { addItem })(App);
+
+// props.dispatch() is available as default of connect(), so one can also write:
+// export default connect(state => ({ items: state.items }))(App);
