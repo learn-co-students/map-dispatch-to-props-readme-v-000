@@ -6,7 +6,7 @@ import { addItem } from  './actions/items';
 class App extends Component {
 
   handleOnClick() {
-    this.props.store.dispatch(addItem());
+    this.props.addItem();
   }
 
   render() {
@@ -27,4 +27,19 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = dispatch => {
+  return {
+    addItem: () => {
+      dispatch(addItem())
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
+// alternatively, omit defining mapDispatchToProps and connect the action as an object:
+
+// export default connect(mapStateToProps, { addItem })(App);
+/* ES6 shorthand lets us pass in *one* value that will be read as the key and value */
+
+// both mapStateToProps and mapDispatchToProps can be omited if state and action are directly references in connect():
+// export default connect(state => ({ items: state.items }), { addItem })(App);
