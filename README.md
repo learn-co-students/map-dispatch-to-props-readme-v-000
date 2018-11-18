@@ -14,7 +14,7 @@ to do just that. We'll remove knowledge of the store from our components by
 using a function similar to `mapStateToProps()`, which is called
 `mapDispatchToProps()`.
 
-## Identifying the Problem
+## Identifying the Problem beep?
 
 So we're back to using the same codebase as we used in our `mapStateToProps()`
 readme.  Essentially, inside the `./src/App.js` file, you can see that clicking
