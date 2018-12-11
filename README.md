@@ -12,7 +12,7 @@ components was that we did not know how to dispatch actions without calling
 `store.dispatch()` from our component.  Well, in this lesson we'll learn how
 to do just that. We'll remove knowledge of the store from our components by
 using a function similar to `mapStateToProps()`, which is called
-`mapDispatchToProps()`.
+`mapDispatchToProps()`.hjvjhkbjhb
 
 ## Identifying the Problem
 
