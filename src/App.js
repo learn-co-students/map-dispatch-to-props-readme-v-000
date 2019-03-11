@@ -5,14 +5,17 @@ import { addItem } from  './actions/items';
 
 class App extends Component {
 
-  handleOnClick() {
-    this.props.store.dispatch(addItem());
+  handleOnClick = event => {
+    // this.props.store.dispatch(addItem());
+    this.props.addItem()
   }
 
   render() {
+    debugger
     return (
       <div className="App">
-        <button onClick={(event) => this.handleOnClick(event)}>
+        <button 
+          onClick={(event) => this.handleOnClick(event)}>
           Click
           </button>
         <p>{this.props.items.length}</p>
@@ -21,10 +24,20 @@ class App extends Component {
   }
 };
 
-const mapStateToProps = (state) => {
-  return {
-    items: state.items
-  };
-};
+// const mapStateToProps = (state) => {
+//   return {
+//     items: state.items
+//   };
+// };
 
-export default connect(mapStateToProps)(App);
+// const mapDispatchToProps = dispatch => {
+//   return{
+//     addItem: () => {
+//       dispatch(addItem())
+//     }
+//   }
+// }
+export default connect(state => ({items: state.items}), { addItem }), )(App);
+/* ES6 shorthand lets us pass in *one* value that 
+will be read as the key and value */
+
