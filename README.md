@@ -16,6 +16,7 @@ using a function similar to `mapStateToProps()`, which is called
 
 ## Identifying the Problem
 
+
 So we're back to using the same codebase as we used in our `mapStateToProps()`
 readme.  Essentially, inside the `./src/App.js` file, you can see that clicking
 on a button dispatches an action to the store. In the `mapStateToProps()`
