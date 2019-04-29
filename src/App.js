@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import './App.css';
 import { connect } from 'react-redux';
 import { addItem } from  './actions/items';
-
+ 
 class App extends Component {
-
+ 
   handleOnClick = event => {
     this.props.addItem()
   }
-
+ 
   render() {
     debugger
     return (
@@ -21,7 +21,5 @@ class App extends Component {
     );
   }
 };
-
-
-
-export default connect(state => ({ items: state.items }), { addItem })(App);
+ 
+export default connect(state => ({ items: state.items }))(App);
