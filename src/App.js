@@ -5,14 +5,15 @@ import { addItem } from  './actions/items';
 
 class App extends Component {
 
-  handleOnClick() {
-    this.props.store.dispatch(addItem());
+  handleOnClick = event => {
+    this.props.addItem();
   }
 
   render() {
+    debugger
     return (
       <div className="App">
-        <button onClick={(event) => this.handleOnClick(event)}>
+        <button onClick={this.handleOnClick}>
           Click
           </button>
         <p>{this.props.items.length}</p>
@@ -21,10 +22,20 @@ class App extends Component {
   }
 };
 
-const mapStateToProps = (state) => {
-  return {
-    items: state.items
-  };
-};
+//const mapStateToProps = (state) => {      can get rid of mapStateToProps & mapDispatchToProps & let
+ // return {                                      redux handle it all within the default stmt below.
+ //   items: state.items                      It works bc we're passing in an object instead of a function
+//  };                                            See Readme for more detail
+//};
 
-export default connect(mapStateToProps)(App);
+//const mapDispatchToProps = dispatch => {
+//  return {
+//    addItem: () => {
+ //     dispatch(addItem())
+//    }
+ // }
+//}
+
+//export default connect(mapStateToProps, mapDispatchToProps)(App);
+
+export default connect(state => ({ items: state.items }), { addItem })(App)
