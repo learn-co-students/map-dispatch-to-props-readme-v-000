@@ -39,3 +39,9 @@ class App extends Component {
 //export default connect(mapStateToProps, mapDispatchToProps)(App);
 
 export default connect(state => ({ items: state.items }), { addItem })(App)
+
+//can also remove the {addItem} from the export default & it will still make this.props.dispatch available
+//to us. It can look as follows & still work:
+//export default connect(state => ({ items: state.items }))(App)
+
+//it seems clearer to completely write it out so you can see exactly what it's doing
