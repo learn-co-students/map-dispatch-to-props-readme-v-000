@@ -44,3 +44,4 @@ export default connect(mapStateToProps, {addItem})(App);
 // could go as far as:
 // export default connect(state => ({ items: state.items }), { addItem })(App);
 // By default mapDispatchToProps is just dispatch => ({ dispatch }). So if you don't specify the second argument to connect(), you'll get dispatch injected as a prop in your component.
+// see https://stackoverflow.com/questions/34458261/how-to-get-simple-dispatch-from-this-props-using-connect-w-redux for more!
