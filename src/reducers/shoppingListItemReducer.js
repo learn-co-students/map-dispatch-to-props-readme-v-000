@@ -9,6 +9,7 @@ export default function shoppingListItemReducer(state = {
       return Object.assign({}, {
         items: state.items.concat(state.items.length)
       });
+      // hellllllo
 
     default:
       console.log(state)
