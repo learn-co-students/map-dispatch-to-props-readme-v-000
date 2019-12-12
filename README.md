@@ -219,7 +219,7 @@ into props. The second argument of `connect` will accept a function (as we've se
 _or_ an object. If we pass in a function, `mapDispatchToProps()`, we must
 incorporate `dispatch` as with the previous example. If we pass in an object, `connect` handles this step for us! The object just needs to
 contain key/value pairs for each action creator we want to become props.
-In our example, we've using the `addItem` action creator, so the object
+In our example, we're using the `addItem` action creator, so the object
 would look like this:
 
 ```js
