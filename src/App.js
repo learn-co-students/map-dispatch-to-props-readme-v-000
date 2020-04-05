@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { addItem } from "./actions/items";
 import "./App.css";
 
@@ -25,8 +24,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ addItem }, dispatch);
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, { addItem })(App);
