@@ -5,13 +5,14 @@ export default function shoppingListItemReducer(state = {
   switch(action.type) {
 
     case 'INCREASE_COUNT':
-      console.log(state.items.concat(state.items.length));
-      return Object.assign({}, {
+      console.log('increased', state.items.concat(state.items.length));
+      return {
+        ...state, 
         items: state.items.concat(state.items.length)
-      });
+      };
 
     default:
-      console.log(state)
+      console.log('unchanged', state)
       return state;
   }
 };
