@@ -2,93 +2,145 @@
 
 ## Objectives
 
-- Write functions that connect Redux actions to component events
+- Implement an action creator
+- Use the mergeDispatchToProps method to further streamline our code
+
 
 ### Introduction
 
-In the last lessons, we learned that `mapStateToProps()` separates
-concerns. We no longer have to reference the store inside our component when
-retrieving the state. We are moving towards having state management in one
-part of our code, and display logic in a different part.
+In the previous lessons, we've learned how `mapStateToProps()` can help with separation of concerns. Specifically, we saw that we can use `mapStateToProps` to return needed information from the store's state. Then, by passing `mapStateToProps` as an argument to the `connect` method, the information is passed into our component as props. With this in place, we no longer need to access our store directly from the component. 
 
-In other words, we're moving knowledge of _Redux_ outside our components.
+We've also learned that the `connect` method *automatically* passes the store's `dispatch` method to the component as props, enabling us to also dispatch actions without directly invoking the store. 
 
-What prevented us from fully removing a reference to __Redux__ inside our
-components was that we did not know how to dispatch actions without calling
-`store.dispatch()` from our component.  Well, in this lesson we'll learn how
-to do just that. We'll remove knowledge of the store from our components by
-using a function similar to `mapStateToProps()`, which is called
-`mapDispatchToProps()`.
+Finally, in the last lesson, we learned about action creators and the benefits of using them rather than passing action objects directly into the `dispatch` method. 
 
-## Identifying the Problem
+In this codealong we will implement an action creator for a simple todo list app. We will also learn how to pass a second argument, `mapDispatchToProps`, to `connect` to further streamline and compartmentalize our code.
 
-To begin, take a look at the starting code provided in `src/App.js`:
+## Our Todo App
+
+To begin, let's take a look at the starting code provided in `src/App.js`:
 
 ```js
 // ./src/App.js
-import React, { Component } from 'react';
-import './App.css';
-import { connect } from 'react-redux';
-import { addItem } from  './actions/items';
 
-class App extends Component {
+INSERT FULL CODE HERE
 
-  handleOnClick() {
-    this.props.store.dispatch(addItem());
-  }
-
-  render() {
-    return (
-      <div className="App">
-        <button onClick={(event) => this.handleOnClick(event)}>
-          Click
-          </button>
-        <p>{this.props.items.length}</p>
-      </div>
-    );
-  }
-};
-
-const mapStateToProps = (state) => {
-  return {
-    items: state.items
-  };
-};
-
-export default connect(mapStateToProps)(App);
 ```
 
-We can see that `mapStateToProps()` is already implemented and is
-making `state.items` available to `App` as `this.props.items`. We
-also see that the button in `render()` calls `handleOnClick()` when
-clicked. The `handleOnClick()` does one thing - it dispatches an action 
-to the _store_.
-
-In the earlier `mapStateToProps()` Readme, we changed our code such that we no
-longer reference the store to get an updated state of the items, but here we
-still reference the store in `handleOnClick()` to dispatch an action:
+In our `render` you can see we have a simple form with an `onSubmit` handler. The form includes a text input box with an `onChange` handler, and a submit button. Below the form we are rendering a list of the todos. 
 
 ```javascript
 // ./src/app.js
 ...
 
-handleOnClick(){
-  this.props.store.dispatch(addItem())
-}
+INSERT RENDER HERE
 
 ...
 ```
 
-Okay, so this may seem small, but it introduces our old problem. Our component is
-no longer indifferent about its state management system. Instead, this line of
-code makes the component reliant on __Redux__.  
+In order to make our `App` component a controlled component, we have created a local `state` variable which is updated in our `handleOnChange` method and used to populate the text input field:
 
-Well we can fix this problem with our `connect()` function. Just like we can
-write code like `connect(mapStateToProps)(App)` to add new props to our __App__
-component, we can pass `connect()` a second argument, and add our _action
-creator_ as props. Then we can reference this action creator as a prop to call
-it from our component. We'll spend the rest of this lesson unpacking the
-previous sentence. Okay, let's see how this works.
+```javascript
+// ./src/app.js
+...
+
+INSERT STATE AND HANDLEONCHANGE HERE
+
+...
+```
+
+When the Submit button is clicked, our `handleOnSubmit` method dispatches an action object with type `ADD_TODO` and a payload taken from `this.state`. The reducer, which you can see in `reducers/todoListReducer.js`, then takes the information from the action to update the store. 
+
+```javascript
+// ./src/app.js
+...
+
+INSERT HANDLEONSUBMIT HERE
+
+...
+```
+
+Finally, the `connect` method passes the return value of the `mapStateToProps` method as props to our component, enabling us to access `this.props.todos` in our `render` method. `connect` also passes the `dispatch` method as props automatically, enabling us to access `this.props.dispatch` in our `onHandleSubmit` method:
+
+```javascript
+// ./src/app.js
+...
+
+ENTER MAPSTATETOPROPS AND EXPORT HERE
+
+```
+
+Start up the app in your browser and open the console. You should see the initial action logged by the reducer. Enter a todo in the input box and click submit to verify that the store is being updated and the list of todos is being rendered to the screen. You should also see the action logged in the console by the reducer, and the todo that's being added logged by the `handleOnSubmit` method.
+
+#### Implementing an Action Creator
+
+Currently, in our `onHandleSubmit` method, we are passing our action directly:
+
+```javascript
+this.props.dispatch({ type: 'ADD_TODO', todo: this.state.todo });
+```
+
+As we learned in the previous lesson, we can use an action creator method instead to DRY up our code a bit. Let's go ahead and add an `addTodo` method to our `App` component:
+
+```javascript
+// ./src/app.js
+...
+
+  addTodo = () => {
+    return ({
+      type: 'ADD_TODO',
+      todo: this.state.todo
+    })
+  }
+
+...
+```
+
+Note that, because we are storing the todo to be added in our local state, we do not need to pass the todo as an argument to our method; we can instead access it directly from `this.state`.
+
+Then we can update our `onHandleSubmit` method to use the results of calling `addTodo` as the argument for the `dispatch` method:
+
+```javascript
+  handleOnSubmit(event) {
+    event.preventDefault();
+    console.log("Todo being added: ", this.state.todo)
+    this.props.dispatch(this.addTodo()); //Code change: using our action creator method instead of passing the action directly
+    this.setState({ todo: '' })
+  }
+
+```
+
+Refresh the app to verify that it's still working.
+
+Defining our action creator inside our component works just fine, but you can imagine that with a more complicated app where we need to implement more than one or two actions, this could get out of control quickly. A common pattern, therefore, is to create a separate folder to hold our action creators.
+
+Let's go ahead and create an `actions` folder inside the `src` folder. Then create a new file, `todos.js` and move our action creator from the `App` component into the new file. Don't forget to export the function so it will be available to our component. It should look like this: 
+
+```javascript
+// ./src/actions/todo.js
+export const addTodo = (todo) => {
+  return { 
+    type: 'ADD_TODO',
+    todo: todo
+  };
+};
+```
+
+Note that because the action creator is no longer defined inside our `App` component, we will now need to pass the todo as an argument to `addTodo`.
+
+To get everything hooked up, let's add the appropriate import to `App.js`:
+
+```javascript
+import { addTodo } from  './actions/todos';
+```
+
+Then we just need to modify our dispatch inside the `onHandleSubmit` method as follows:
+
+```javascript
+this.props.dispatch(addTodo(this.state.todo));
+```
+
+Refresh the app in your browser and give it a try. Everything still works!
 
 #### Using `mapDispatchToProps`
 
@@ -105,56 +157,28 @@ const mapStateToProps = state => {
 }
 ```
 
-We call this function `mapStateToProps` because that is what it does. This
-function is passed in as the _first_ argument to `connect()`. When `connect()` executes, it calls the function passed in as its first argument, passing in the current state to the function.
+We call this function `mapStateToProps` because that is what it does. This function 
+is passed in as the _first_ argument to `connect()`. When `connect()` executes, it 
+calls `mapStateToProps`, passing in the current state.
 
-Just like the first argument, `connect()` accepts a **function** for the
-_second_ argument. This time, again, when `connect()` executes, it calls the
-second function passed in. However, instead of passing _state_ in, it passes in
-the _dispatch_ function. This means we can write a function assuming we have
-access to `dispatch()`. We call it `mapDispatchToProps` because that is
-what it does. Updating our `./src/App.js` file, it looks like the following:
+`connect()` can also take a second argument which is also a **function**. When 
+`connect()` executes, it calls both functions, passing _state_ in to the first 
+and passing the _dispatch_ function to the second. This means we can write a function assuming we have access to `dispatch()`. We call it `mapDispatchToProps` because that 
+is what it does. Updating our `./src/App.js` file, it looks like the following:
 
 ``` javascript
 // src/App.js
 
-import React, { Component } from 'react';
-import './App.css';
-import { connect } from 'react-redux';
-import { addItem } from  './actions/items';
-
-class App extends Component {
-
-  handleOnClick = event => {
-    this.props.addItem() // Code change: this.props.store.dispatch is no longer being called
-  }
-
-  render() {
-    return (
-      <div className="App">
-        <button onClick={this.handleOnClick}>
-          Click
-          </button>
-        <p>{this.props.items.length}</p>
-      </div>
-    );
-  }
-};
-
-const mapStateToProps = (state) => {
-  return {
-    items: state.items
-  };
-};
+INSERT APP.JS HERE, WITH BELOW ADDITIONS
 
 // Code change: this new function takes in dispatch as an argument
 // It then returns an object that contains a function as a value!
-// Notice above in handleOnClick() that this function, addItem(),
-// is what is called, NOT the addItem action creator itself.
+// Notice above in handleOnSubmit() that this function, addTodo(),
+// is what is called, NOT the addTodo action creator itself.
 const mapDispatchToProps = dispatch => {
   return {
-    addItem: () => {
-      dispatch(addItem())
+    addTodo: (todo) => {
+      dispatch(addTodo(todo))
     }
   };
 };
@@ -162,55 +186,37 @@ const mapDispatchToProps = dispatch => {
 export default connect(mapStateToProps, mapDispatchToProps)(App);
 ```
 
-Okay, so let's see what adding our `mapDispatchToProps()` function, and passing it
-through as a second argument accomplished. We'll place in another debugger in
+Okay, so let's see what we accomplished by adding our `mapDispatchToProps()` function, and passing it through as a second argument. We'll place another debugger in
 our component, right at the beginning of `render()`, just before the return
 statement. 
 
 ```js
 // src/App.js
 ...
-render() {
-    debugger
-    return (
-      <div className="App">
-        <button onClick={this.handleOnClick}>
-          Click
-          </button>
-        <p>{this.props.items.length}</p>
-      </div>
-    );
-  }
+
+INSERT RENDER HERE WITH DEBUGGER AT THE TOP
 ...
 ```
 
-Now, boot up the app, open up your console and when you hit the debugger
-statement, type in `this.props.addItem`. You'll see that it returns a function
-with dispatch inside. So, just like with `mapStateToProps()`, we added a prop
-that pointed to a value, here we add a prop `addItem` that points to the value,
-a function. The `dispatch` function is available as an argument to
-`mapDispatchToProps`. By defining the function `addItem` inside
-`mapDispatchToProps`, we're able to include `dispatch` in the definition; we've
-bundled everything we need into a single prop value.
+Now, boot up the app, open up your console and when you hit the debugger, type in `this.props.addTodo`. You'll see that it returns a function with dispatch inside. With `mapStateToProps()`, we added a prop `todos` that pointed to a value, an array containing all the todos. Here we add a prop `addTodo` that also points to a value, in this case a function. The `dispatch` function is available as an argument to `mapDispatchToProps`. By defining the function `addTodo` inside `mapDispatchToProps`, we're able to include `dispatch` in the definition; we've bundled everything we need into a single prop value.
 
-With `dispatch` integrated into `this.props.addItem`, we can change our code such that when the `handleOnClick()` function
-gets called, we execute our action creator by referencing it as a prop:
+With `dispatch` integrated into `this.props.addTodo`, we can change our code such that when the `handleOnSubmit()` function gets called, we execute our action creator by referencing it as a prop, and pass in the todo from local state as an argument:
 
 ```javascript
 // ./src/App.js
 
 ...
 
-handleOnClick = event => {
-  this.props.addItem()
+handleOnSubmit = event => {
+  this.props.addTodo(this.state.todo)
 }
 
 ...
 ```
 
-This code calls the `handleOnClick()` function after the button is clicked.
-The `handleOnClick()` references and then executes the `addItem()` function
-by calling `this.props.addItem()`.  
+This code calls the `handleOnSubmit()` function after the Submit button is clicked.
+The `handleOnSubmit()` function references and then executes the `addTodo()` function
+by calling `this.props.addTodo()`.  
 
 ## Alternative Method
 
@@ -219,12 +225,12 @@ into props. The second argument of `connect` will accept a function (as we've se
 _or_ an object. If we pass in a function, `mapDispatchToProps()`, we must
 incorporate `dispatch` as with the previous example. If we pass in an object, `connect` handles this step for us! The object just needs to
 contain key/value pairs for each action creator we want to become props.
-In our example, we've using the `addItem` action creator, so the object
+In our example, we've using the `addTodo` action creator, so the object
 would look like this:
 
 ```js
 {
-  addItem: addItem
+  addTodo: addTodo
 }
 ```
 
@@ -233,7 +239,7 @@ the same name, we can use the shorthand syntax and write:
 
 ```js
 {
-  addItem
+  addTodo
 }
 ```
 
@@ -242,37 +248,10 @@ This is all we need to pass in as a second argument for `connect()`.
 `App` then changes to look like the following:
 
 ```js
-import React, { Component } from 'react';
-import './App.css';
-import { connect } from 'react-redux';
-import { addItem } from  './actions/items';
 
-class App extends Component {
+INSERT APP.JS HERE, DELETING MAPDISPATCHTOPROPS AND CHANGING EXPORT STATEMENT AS FOLLOWS
 
-  handleOnClick = event => {
-    this.props.addItem()
-  }
-
-  render() {
-    debugger
-    return (
-      <div className="App">
-        <button onClick={this.handleOnClick}>
-          Click
-          </button>
-        <p>{this.props.items.length}</p>
-      </div>
-    );
-  }
-};
-
-const mapStateToProps = (state) => {
-  return {
-    items: state.items
-  };
-};
-
-export default connect(mapStateToProps, { addItem })(App); // Code change: no mapDispatchToProps function required!
+export default connect(mapStateToProps, { addTodo })(App); // Code change: no mapDispatchToProps function required!
 ```
 
 > **Aside**: We _could_ go further and get rid of `mapStateToProps()` as well.
@@ -280,7 +259,7 @@ export default connect(mapStateToProps, { addItem })(App); // Code change: no ma
 > anonymous arrow function that handles everything in one line:
 
 ```js
-export default connect(state => ({ items: state.items }), { addItem })(App);
+export default connect(state => ({ todos: state.todos }), { addTodo })(App);
 ```
 
 This is equivalent to writing:
@@ -288,45 +267,19 @@ This is equivalent to writing:
 ```js
 const mapStateToProps = state => {
   return {
-    items: state.items
+    todos: state.todos
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    addItem: () => { dispatch(addItem()) }
+    addTodo: () => { dispatch(addTodo()) }
   }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
 ```
 
-## Default Dispatch Behavior
-
-In addition to this, as per Dan Abramov, the creator of __Redux__:
-
-> By default mapDispatchToProps is just dispatch => ({ dispatch }). So if you
-don't specify the second argument to connect(), you'll get dispatch injected as
-a prop in your component.
-
-This means that if we were to simply write:
-
-```js
-export default connect(state => ({ items: state.items }))(App);
-```
-
-...we would _still_ have `this.props.dispatch()` available to us in App. If you
-would rather write `this.props.dispatch({ type: 'INCREASE_COUNT' })` in App, or
-pass `dispatch` down to children, you can!
-
-## Resources
-
-- [Dan Abramov Stack Overflow Response about mapDispatchToProps](https://stackoverflow.com/questions/34458261/how-to-get-simple-dispatch-from-this-props-using-connect-w-redux)
-
 ## Summary
 
-In this lesson, we saw that we can remove all references to our store from our
-component via the `mapDispatchToProps()` function. We saw that
-`mapDispatchToProps()` allows us to bring in actions, combine them with
-`dispatch` and connect events on our page to actions in our store.
-
+In this lesson, we saw how we can use action creators and the `mapDispatchToProps()` function to further compartmentalize and streamline our code, improving separation of concerns. We saw that `mapDispatchToProps()` allows us to bring in actions, combine them with `dispatch` and connect events on our page to actions in our store.
