@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import './App.css';
-import { addTodo } from  './actions/todos';
 
 class App extends Component {
 
@@ -23,7 +22,6 @@ class App extends Component {
   }
 
   render() {
-    // debugger;
     const renderTodos = () => this.props.todos.map(todo => <li key={todo}>{todo}</li>) 
     return (
       <div className="App">
