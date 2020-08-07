@@ -22,7 +22,7 @@ class App extends Component {
   }
 
   render() {
-    const renderTodos = () => this.props.todos.map(todo => <li key={todo}>{todo}</li>) 
+    const renderTodos = () => this.props.todos.map(todo => <li key={todo}>{todo}</li>);
     return (
       <div className="App">
       <form onSubmit={(event) => this.handleOnSubmit(event)}>
