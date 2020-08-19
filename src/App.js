@@ -6,7 +6,7 @@ import { addItem } from  './actions/items';
 class App extends Component {
 
   handleOnClick = event => {
-    this.props.addItem()
+    this.props.dispatch({ type: 'INCREASE_COUNT' });
   }
 
   render() {
@@ -41,4 +41,5 @@ class App extends Component {
 
 // export default connect(mapStateToProps, { addItem })(App);
 
-export default connect(state => ({ items: state.items }), { addItem })(App);
+// export default connect(state => ({ items: state.items }), { addItem })(App);
+export default connect(state => ({ items: state.items }))(App);
