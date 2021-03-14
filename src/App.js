@@ -10,7 +10,7 @@ class App extends Component {
   }
 
   render() {
-    
+    debugger
     return (
       <div className="App">
         <button onClick={(event) => this.handleOnClick(event)}>
