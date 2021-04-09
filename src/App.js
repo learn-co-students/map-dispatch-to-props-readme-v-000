@@ -6,10 +6,12 @@ import { addItem } from  './actions/items';
 class App extends Component {
 
   handleOnClick() {
-    this.props.store.dispatch(addItem());
+    // this.props.store.dispatch(addItem());
+		this.props.addItem()
   }
 
   render() {
+		debugger
     return (
       <div className="App">
         <button onClick={(event) => this.handleOnClick(event)}>
@@ -21,10 +23,20 @@ class App extends Component {
   }
 };
 
-const mapStateToProps = (state) => {
-  return {
-    items: state.items
-  };
-};
+// START explicitly created map to props functions to be passed to connect
+// const mapStateToProps = (state) => {
+//   return {
+//     items: state.items
+//   };
+// };
 
-export default connect(mapStateToProps)(App);
+// const mapDispatchToProps = dispatch => {
+// 	return { addItem: () => { dispatch(addItem()) }}
+// }
+
+// export default connect(mapStateToProps, mapDispatchToProps)(App);
+// END explicitly created map to props functions to be passed to connect
+
+// Alternative is to pass is the state as the first argument and the addItem object as the second argumenr
+// connect will still have dispatch as a prop
+export default connect(state => ({ items: state.items }), { addItem })(App);
