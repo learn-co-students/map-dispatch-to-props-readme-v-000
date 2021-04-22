@@ -1,3 +1,4 @@
-export const addItem = (name) => {
-  return { type: 'INCREASE_COUNT' };
+// ./actions/item.js
+export const addItem = (itemData) => {
+  return { type: 'INCREASE_COUNT', item: itemData };
 };
