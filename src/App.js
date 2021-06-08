@@ -77,4 +77,7 @@ const mapStateToProps = (state) => {
  };
 };
  
+// The second argument of connect will accept a function (as we've seen) or an object.
+// If we pass in a function, mapDispatchToProps(), we must incorporate dispatch as with the previous example. 
+//If we pass in an object, connect handles this step for us! 
 export default connect(mapStateToProps, { addItem })(App); // Code change: no mapDispatchToProps function required!
